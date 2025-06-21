@@ -54,92 +54,34 @@ def add_activity(input_str:str):
                 name = " ".join(words[1:])
             else:
                 return "Error: Input must contain user ID and activity description"
-        
-        # Initialize default values
-        time = "09:00"
+                        
         date = datetime.now().strftime("%Y-%m-%d")
-        tags = []
-        
-        # Use LLM to extract structured data
+        tags = []          
         llm_data = extract_activity_data_with_llm(llm, input_str)
         
-        if llm_data:
-            print("\n--- LLM EXTRACTED DATA ---")
-            print(json.dumps(llm_data, indent=2))
-            print("-------------------------\n")
+        if not llm_data:
+            return "Service Unavailable: Unable to process the request at this time."
             
-            # Use the LLM extracted data
-            if "user_id" in llm_data and llm_data["user_id"]:
-                id = llm_data["user_id"]
-            
-            if "description" in llm_data and llm_data["description"]:
-                name = llm_data["description"]
+        print("\n--- LLM EXTRACTED DATA ---")
+        print(json.dumps(llm_data, indent=2))
+        print("-------------------------\n")
                 
-            if "time" in llm_data and llm_data["time"]:
-                time = llm_data["time"]
-                
-            if "date" in llm_data and llm_data["date"]:
-                date = llm_data["date"]
-                
-            if "tags" in llm_data and isinstance(llm_data["tags"], list) and llm_data["tags"]:
-                tags = llm_data["tags"]
-        else:
-            # Fallback to regex time extraction if LLM extraction fails
-            # Extract time patterns using regular expressions
-            time_patterns = [
-                r'at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm|AM|PM)',
-                r'(\d{1,2})(?::(\d{2}))?\s*(am|pm|AM|PM)',
-                r'at\s+(\d{1,2})(?::(\d{2}))?(?:\s*hrs|\s*hours)',
-                r'(\d{1,2})(?::(\d{2}))?(?:\s*hrs|\s*hours)',
-                r'at\s+(\d{1,2})(?::(\d{2}))?'
-            ]
-            
-            # Try each pattern
-            time_match = None
-            matched_pattern = None
-            
-            for pattern in time_patterns:
-                match = re.search(pattern, input_str)
-                if match:
-                    time_match = match
-                    matched_pattern = pattern
-                    break
-            
-            if time_match:
-                hour = int(time_match.group(1))
-                minute = time_match.group(2) if len(time_match.groups()) > 1 and time_match.group(2) else None
-                
-                # Check if AM/PM is specified
-                if len(time_match.groups()) > 2 and time_match.group(3):
-                    period = time_match.group(3).lower()
-                    # Convert to 24-hour format
-                    if period == "pm" and hour < 12:
-                        hour += 12
-                    elif period == "am" and hour == 12:
-                        hour = 0
-                
-                # Format the time string
-                if minute:
-                    time = f"{hour:02d}:{minute}"
-                else:
-                    time = f"{hour:02d}:00"
-                    
-                # Remove time info from description to clean it up
-                if matched_pattern:
-                    name = re.sub(matched_pattern, '', name).strip()
-                
-                # Further clean up common words related to time
-                name = re.sub(r'\s+at\s+', ' ', name).strip()
-            
-            # Extract possible tags from the description if LLM didn't provide them
-            common_tags = ["reminder", "meeting", "task", "appointment", "medicine", "workout", "bath", "eat", "sleep"]
-            for tag in common_tags:
-                if tag in name.lower():
-                    tags.append(tag)
+        if "user_id" in llm_data and llm_data["user_id"]:
+            id = llm_data["user_id"]
         
-        # Generate a unique activity ID
-        activity_id = f"act_{uuid.uuid4().hex[:6]}"
-          # Create activity structure with JSON format
+        if "description" in llm_data and llm_data["description"]:
+            name = llm_data["description"]
+            
+        if "time" in llm_data and llm_data["time"]:
+            time = llm_data["time"]
+            
+        if "date" in llm_data and llm_data["date"]:
+            date = llm_data["date"]
+            
+        if "tags" in llm_data and isinstance(llm_data["tags"], list) and llm_data["tags"]:
+            tags = llm_data["tags"]
+                
+        activity_id = f"act_{uuid.uuid4().hex[:6]}"          
         activity = {
             "activity_id": activity_id,
             "user_id": id,
@@ -155,15 +97,12 @@ def add_activity(input_str:str):
             },
             "expiry": (datetime.now() + timedelta(days=14)).isoformat() + "Z"
         }
-        
-        # If LLM extracted a duration, try to set a better expiry date
+                
         if llm_data and "duration" in llm_data and llm_data["duration"]:
-            duration = llm_data["duration"].lower()
-            # Try to extract number of days
-            days = 7  # Default 1 week
+            duration = llm_data["duration"].lower()            
+            days = 7  
             
-            if "week" in duration or "wk" in duration:
-                # Extract number before "week"
+            if "week" in duration or "wk" in duration:                
                 match = re.search(r'(\d+)\s*(?:week|wk)', duration)
                 if match:
                     days = int(match.group(1)) * 7
@@ -175,11 +114,9 @@ def add_activity(input_str:str):
                 match = re.search(r'(\d+)\s*month', duration)
                 if match:
                     days = int(match.group(1)) * 30
-                    
-            # Set expiry based on duration
+                                
             activity["expiry"] = (datetime.now() + timedelta(days=days)).isoformat() + "Z"
-        
-        # Format the JSON for pretty printing
+                
         formatted_json = json.dumps(activity, indent=2)
         
         print(f"\n--- ADDING ACTIVITY FOR USER: {id} ---")
@@ -195,7 +132,6 @@ def add_activity(input_str:str):
         print(f"Input received: '{input_str}'")
         return f"Error processing activity: {e}"
 
-# New function to extract activity data using LLM
 def extract_activity_data_with_llm(llm, input_str):
     """Use the Gemini API to directly extract structured activity data from user input.
     
@@ -204,10 +140,10 @@ def extract_activity_data_with_llm(llm, input_str):
         input_str: User input string
     
     Returns:
-        Dictionary with extracted activity data
+        Dictionary with extracted activity data or None if extraction fails
     """
     try:
-        # Create a more structured prompt that explicitly asks for JSON output
+        # Create a structured prompt that explicitly asks for JSON output
         prompt = f"""
 You are a data extraction assistant. Parse the following user input into a structured JSON object.
 
@@ -244,13 +180,13 @@ RESPOND ONLY WITH THE JSON OBJECT, no explanations or other text.
                 try:
                     data = json.loads(json_match.group(1))
                     return data
-                except json.JSONDecodeError:
-                    print(f"Failed to parse JSON from matched content: {json_match.group(1)}")
-            
-            # If we still can't parse it, log the response and return None
-            print(f"Could not extract JSON from response: {content}")
+                except:
+                    # Any parsing failure returns None
+                    return None
+            # Could not extract JSON
             return None
     except Exception as e:
+        # Any error returns None
         print(f"Error extracting data with LLM: {e}")
         return None
 
@@ -293,7 +229,10 @@ def process_query_with_agent(query):
     """
     try:
         # Create an instance of the LLM if not already available
-        gemini_api_key = os.getenv("GOOGLE_API_KEY", 'AIzaSyAbNaZI7HgPx_nbGZzJREu7GM8yFQkJI5Q')
+        gemini_api_key = os.getenv("GOOGLE_API_KEY")
+        if not gemini_api_key:
+            return "Service Unavailable: Missing API key"
+            
         gemini = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=gemini_api_key)
         
         # Initialize the agent with tools
@@ -310,11 +249,12 @@ def process_query_with_agent(query):
         # Return the output
         return output
     except Exception as e:
-        return f"Error processing query with agent: {str(e)}"
+        return f"Service Unavailable: {str(e)}"
 
 # Example of agent-based processing
 if __name__ == "__main__":    
-    query='add activity for userr_291231 to take bath in 5 minutes'        
+    #query='add activity for userr_291231 to take bath in 5 minutes'        
+    query='fetch all the activites for userr_291231'        
     print(f"\n=== PROCESSING QUERY: {query} ===")
     result = process_query_with_agent(query)
     print("AGENT RESULT:")
