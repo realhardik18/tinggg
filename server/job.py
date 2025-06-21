@@ -22,7 +22,7 @@ def execute_scheduled_job(activity_data):
         print(f"Time: {get_current_time()}")
         print(f"Activity: {description}")
         print(f"User: {user_id}")
-        response = call(activity_data)
+        response = call(activity_data,activity_data['form']['name'],activity_data['form']['description'])
         if hasattr(response, 'status_code') and response.status_code == 200:
             print("Call successfully initiated!")
         else:
