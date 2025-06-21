@@ -55,8 +55,7 @@ export default function Activities() {
         // Fetch activities when component mounts
         fetchActivities();
     }, []);
-    
-    // Fetch activities from the API
+      // Fetch activities from the API
     const fetchActivities = async (page = 1) => {
         setIsLoading(true);
         try {
@@ -140,8 +139,7 @@ export default function Activities() {
             throw err;
         }
     };
-    
-    // Delete an activity
+      // Delete an activity
     const deleteActivity = async (id) => {
         if (!confirm('Are you sure you want to delete this activity?')) {
             return;
@@ -270,7 +268,7 @@ export default function Activities() {
               "date": "YYYY-MM-DD (if one-time)",
               "time": "HH:MM (if one-time)",
               "days": ["Mon", "Wed", "Fri"] (if recurring),
-              "recurringTimes": {"Mon": "08:00", "Wed": "09:00", "Fri": "08:00"} (if recurring)
+              "recurringTimes": {"Mon": "08:00", "Wed": "09:00", "Fri": "08:00"} (if recurring)              
             }
             
             Don't include any explanations, just the JSON.
@@ -557,47 +555,53 @@ export default function Activities() {
             setToast({ show: false, message: '', type: 'success' });
         }, duration);
     };
-    
-    // Open edit form
+      // Open edit form
     const openEditForm = (activity) => {
-        // Extract data from the activity for the form
-        const isRecurring = activity.metadata?.method === 'recurring';
-        
-        let formData = {
-            name: '',
-            description: '',
-            type: isRecurring ? 'recurring' : 'one_time',
-            date: '',
-            time: '',
-            days: [],
-            recurringTimes: {},
-        };
-        
-        // Extract name and description
-        const descParts = activity.description.split(': ');
-        formData.name = descParts[0];
-        formData.description = descParts.length > 1 ? descParts.slice(1).join(': ') : '';
-        
-        // Extract date and time for one-time activities
-        if (!isRecurring && activity.timestamp) {
-            const date = new Date(activity.timestamp);
-            formData.date = date.toISOString().split('T')[0];
-            formData.time = date.toTimeString().substring(0, 5);
-        }
-        
-        // Extract days and times for recurring activities
-        if (isRecurring && Array.isArray(activity.tags)) {
-            formData.days = activity.tags.filter(tag => daysOfWeek.includes(tag));
+        // Check if we have form data stored in metadata
+        if (activity.metadata?.form_data) {
+            // Use stored form data directly
+            setForm(activity.metadata.form_data);
+            setFormType(activity.metadata.form_data.type);
+        } else {
+            // Fallback to legacy structure if needed
+            const isRecurring = activity.metadata?.method === 'recurring';
             
-            // Extract times from metadata if available
-            if (activity.metadata?.recurringTimes) {
-                formData.recurringTimes = activity.metadata.recurringTimes;
+            let formData = {
+                name: '',
+                description: '',
+                type: isRecurring ? 'recurring' : 'one_time',
+                date: '',
+                time: '',
+                days: [],
+                recurringTimes: {},
+            };
+            
+            // Extract name and description
+            const descParts = activity.description.split(': ');
+            formData.name = descParts[0];
+            formData.description = descParts.length > 1 ? descParts.slice(1).join(': ') : '';
+            
+            // Extract date and time for one-time activities
+            if (!isRecurring && activity.timestamp) {
+                const date = new Date(activity.timestamp);
+                formData.date = date.toISOString().split('T')[0];
+                formData.time = date.toTimeString().substring(0, 5);
             }
+            
+            // Extract days and times for recurring activities
+            if (isRecurring && Array.isArray(activity.tags)) {
+                formData.days = activity.tags.filter(tag => daysOfWeek.includes(tag));
+                
+                // Extract times from metadata if available
+                if (activity.metadata?.recurringTimes) {
+                    formData.recurringTimes = activity.metadata.recurringTimes;
+                }
+            }
+            
+            setForm(formData);
+            setFormType(formData.type);
         }
         
-        // Set form data
-        setForm(formData);
-        setFormType(formData.type);
         setIsEditing(true);
         setCurrentActivityId(activity._id);
         setShowForm(true);
@@ -619,29 +623,25 @@ export default function Activities() {
         setCurrentActivityId(null);
         setShowForm(false);
     };
-    
-    // Handle form submission
+      // Handle form submission
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         
         // Create timestamp string for one-time activities
         const timestamp = form.type === 'one_time' ? `${form.date}T${form.time}:00` : '';
         
-        // Create activity object
+        // Create activity object directly from the form structure
         const activityData = {
             user_id: 'default_user',
-            type: form.type === 'one_time' ? 'manual_entry' : 'reminder_sent',
+            form: { ...form },  // Store the complete form structure
             timestamp: timestamp,
             description: form.name + (form.description ? ': ' + form.description : ''),
             tags: form.type === 'recurring' ? form.days : [form.type],
+            type: form.type,
             metadata: {
-                method: form.type === 'recurring' ? 'recurring' : 'one_time',
-                triggered_by: 'user',
-                recurringTimes: form.type === 'recurring' ? form.recurringTimes : {},
-                next_trigger: form.type === 'recurring' ? 
-                    Object.keys(form.recurringTimes).length > 0 ? 
-                        `next_${Object.keys(form.recurringTimes)[0].toLowerCase()}` : null 
-                    : null
+                method: form.type,
+                form_data: form,  // Store the complete form data for easy retrieval/editing
+                triggered_by: 'user'
             }
         };
         
@@ -670,12 +670,20 @@ export default function Activities() {
                 <div className="absolute top-[60%] right-[15%] w-[20rem] h-[20rem] bg-orange-600/5 rounded-full blur-[80px] opacity-60"></div>
                 <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] z-0"></div>
             </div>
-            
-            {/* Toast Notification */}
+              {/* Toast Notification */}
             {toast.show && (
                 <div className="fixed top-6 right-6 z-50 animate-fade-in">
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3 rounded-lg shadow-lg shadow-purple-900/20 flex items-center">
-                        <Sparkle size={20} weight="fill" className="mr-2" />
+                    <div className={`${
+                        toast.type === 'success' 
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600' 
+                            : 'bg-gradient-to-r from-red-600 to-red-500'
+                        } text-white px-5 py-3 rounded-lg shadow-lg flex items-center`}
+                    >
+                        {toast.type === 'success' ? (
+                            <Sparkle size={20} weight="fill" className="mr-2" />
+                        ) : (
+                            <X size={20} weight="fill" className="mr-2" />
+                        )}
                         <span>{toast.message}</span>
                     </div>
                 </div>
@@ -707,11 +715,13 @@ export default function Activities() {
                             </button>
                         </div>
                     </div>
-                    
-                    {/* Add Activity Button */}
+                      {/* Add Activity Button */}
                     <button 
                         className="flex items-center justify-center py-4 px-6 bg-gradient-to-r from-orange-600 to-orange-500 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-orange-500/20 text-white font-medium"
-                        onClick={() => setShowForm(true)}
+                        onClick={() => {
+                            resetForm();
+                            setShowForm(true);
+                        }}
                     >
                         <Plus size={20} className="mr-2" weight="bold" />
                         Add New Activity
@@ -722,15 +732,19 @@ export default function Activities() {
                             {/* Decorative elements */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
                             <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/5 blur-2xl rounded-full -ml-10 -mb-10 pointer-events-none"></div>
-                            
-                            {/* Close button */}
+                              {/* Close button */}
                             <button 
                                 type="button" 
                                 className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-800/50 z-10"
-                                onClick={() => setShowForm(false)}
+                                onClick={() => {
+                                    setShowForm(false);
+                                    if (!isEditing) {
+                                        resetForm();
+                                    }
+                                }}
                             >
                                 &times;
-                            </button>                              {/* Header */}
+                            </button>{/* Header */}
                             <div className="mb-2 flex justify-between items-start">
                                 <div>
                                     <h2 className="text-2xl font-bold text-white">
@@ -1002,10 +1016,12 @@ export default function Activities() {
                             </div>
                             
                             {/* Buttons */}
-                            <div className="flex gap-3 pt-2">
-                                <button 
+                            <div className="flex gap-3 pt-2">                                <button 
                                     type="button" 
-                                    onClick={() => setShowForm(false)}
+                                    onClick={() => {
+                                        setShowForm(false);
+                                        resetForm();
+                                    }}
                                     className="flex-1 py-3 px-4 bg-zinc-800 rounded-lg text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors font-medium"
                                 >
                                     Cancel
@@ -1020,18 +1036,14 @@ export default function Activities() {
                         </form>
                     </div>
                 )}                {/* Activities table-like cards */}
-                <div className="bg-zinc-900/40 backdrop-blur-xl rounded-xl border border-zinc-800/50 shadow-xl mb-8 overflow-hidden">
-                    {/* Table header */}
-                    <div className="grid grid-cols-12 gap-4 p-5 border-b border-zinc-800/50 text-zinc-400 text-sm font-medium bg-black/20">
+                <div className="bg-zinc-900/40 backdrop-blur-xl rounded-xl border border-zinc-800/50 shadow-xl mb-8 overflow-hidden">                    {/* Table header */}                    <div className="grid grid-cols-12 gap-4 p-5 border-b border-zinc-800/50 text-zinc-400 text-sm font-medium bg-black/20">
                         <div className="col-span-3 flex items-center">
-                            <span>Date & Time</span>
+                            <span>Date Created</span>
                             <button className="ml-1 text-zinc-500 hover:text-white">
                                 <ArrowDown size={14} />
                             </button>
                         </div>
-                        <div className="col-span-4">Description</div>
-                        <div className="col-span-2">Type</div>
-                        <div className="col-span-2">Tags</div>
+                        <div className="col-span-8">Description</div>
                         <div className="col-span-1 text-right">Actions</div>
                     </div>
                     
@@ -1056,15 +1068,14 @@ export default function Activities() {
                             No activities found. Create your first one!
                         </div>
                     ) : (
-                        activities.map((activity, index) => (
-                            <div 
+                        activities.map((activity, index) => (                            <div 
                                 key={activity._id} 
                                 className={`grid grid-cols-12 gap-4 p-5 border-b border-zinc-800/30 hover:bg-zinc-800/20 transition-colors ${index % 2 === 0 ? 'bg-black/10' : ''}`}
                             >
                                 <div className="col-span-3 flex items-start">
                                     <div className="flex flex-col">
                                         <span className="text-white font-medium">
-                                            {activity.timestamp ? formatDate(activity.timestamp) : '-'}
+                                            {activity.createdAt ? formatDate(activity.createdAt) : (activity.timestamp ? formatDate(activity.timestamp) : '-')}
                                         </span>
                                         <span className="text-zinc-500 text-xs flex items-center mt-1">
                                             <Clock size={12} className="mr-1" /> 
@@ -1073,29 +1084,11 @@ export default function Activities() {
                                     </div>
                                 </div>
                                 
-                                <div className="col-span-4">
+                                <div className="col-span-8">
                                     <p className="text-white">{activity.description}</p>
                                     {activity.metadata?.response && (
                                         <p className="text-zinc-400 text-sm mt-1 italic">"{activity.metadata.response}"</p>
                                     )}
-                                </div>
-                                
-                                <div className="col-span-2">
-                                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(activity.type)}`}>
-                                        {formatType(activity.type)}
-                                    </span>
-                                </div>
-                                
-                                <div className="col-span-2 flex flex-wrap gap-2">
-                                    {activity.tags && activity.tags.map((tag, idx) => (
-                                        <span 
-                                            key={idx} 
-                                            className="bg-zinc-800/50 text-zinc-300 text-xs px-2 py-1 rounded-full flex items-center"
-                                        >
-                                            <Tag size={10} className="mr-1 text-orange-500" />
-                                            {tag}
-                                        </span>
-                                    ))}
                                 </div>
                                 
                                 <div className="col-span-1 flex items-center justify-end space-x-2">
