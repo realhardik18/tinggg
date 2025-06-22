@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { House, ChatsCircle, ClipboardText, Plugs, UserCircle, BellSimple, FileText } from "@phosphor-icons/react";
+import { House, ChatsCircle, ClipboardText, UserCircle, BellSimple, FileText } from "@phosphor-icons/react";
 
 export default function Sidenav() {
     const [collapsed, setCollapsed] = useState(false);
@@ -130,27 +130,7 @@ export default function Sidenav() {
                             <span className="font-medium whitespace-nowrap overflow-hidden transition-all duration-300">
                                 Records
                             </span>
-                        }
-                    </Link>                    <Link 
-                        href="/integrations" 
-                        className={`group hover:bg-zinc-900/50 rounded-lg px-4 py-3 flex items-center gap-3 transition-all duration-300 border-l-2 ${
-                            isActive('/integrations') 
-                                ? 'border-orange-500 bg-zinc-900/40 text-white' 
-                                : 'border-transparent hover:border-orange-500 text-zinc-400 hover:text-white'
-                        } backdrop-blur-sm`}
-                    >
-                        <Plugs 
-                            size={iconSize} 
-                            color={isActive('/integrations') ? iconColor : "#9ca3af"} 
-                            weight={isActive('/integrations') ? "fill" : "regular"} 
-                            className="min-w-[24px]" 
-                        />
-                        {!collapsed && 
-                            <span className="font-medium whitespace-nowrap overflow-hidden transition-all duration-300">
-                                Integrations
-                            </span>
-                        }
-                    </Link>
+                        }                    </Link>
                 </nav>
             </div>
               {/* Bottom: Account */}
