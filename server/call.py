@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def call(activity_data=None,task='',description=''):
+def call(activity_data=None,task='',description='',activity_id=""):
     """Make a call using the VAPI API with personalized prompt based on activity data.
     
     Args:
@@ -95,7 +95,8 @@ def call(activity_data=None,task='',description=''):
             "variableValues": {
                 "custom_prompt": custom_prompt,
                 "task":task,
-                "description":description
+                "description":description,
+                "activity_id":activity_id
             }
         }
     }

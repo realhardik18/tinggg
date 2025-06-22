@@ -1,7 +1,7 @@
 'use client'
 import Sidenav from "../components/Sidenav";
 import { Gauge, Bell, Plus, MagnifyingGlass, Lightning, ChartLine, Sparkle, CheckCircle, CircleNotch, Calendar, Clock } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Dashboard() {
     const iconSize = 20;
@@ -14,6 +14,44 @@ export default function Dashboard() {
         { id: 3, title: "Product demo", completed: false, priority: "High", dueDate: "Friday, 11am" },
         { id: 4, title: "Weekly report", completed: true, priority: "Low", dueDate: "Completed" }
     ]);
+    
+    // Activities state
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [greeting, setGreeting] = useState('');
+    
+    // Fetch activities from API
+    useEffect(() => {
+        const fetchActivities = async () => {
+            try {
+                const response = await fetch('/api/activities?userId=default_user&limit=5');
+                const data = await response.json();
+                setActivities(data.activities || []);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+                setLoading(false);
+            }
+        };
+        
+        fetchActivities();
+    }, []);
+    
+    // Set greeting based on time of day
+    useEffect(() => {
+        const hour = new Date().getHours();
+        let greetingText = '';
+        
+        if (hour >= 5 && hour < 12) {
+            greetingText = 'Good morning';
+        } else if (hour >= 12 && hour < 18) {
+            greetingText = 'Good afternoon';
+        } else {
+            greetingText = 'Good evening';
+        }
+        
+        setGreeting(`${greetingText}, Hardik`);
+    }, []);
     
     // Toggle task completion
     const toggleTaskCompletion = (taskId) => {
@@ -57,6 +95,23 @@ export default function Dashboard() {
                 </div>                
                 {/* Dashboard Content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Greeting Card */}
+                    <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-xl transform translate-x-5 -translate-y-5"></div>
+                        
+                        <div className="flex items-center justify-between mb-4 relative z-10">
+                            <h3 className="text-lg font-medium text-white">Welcome</h3>
+                            <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50">
+                                <Sparkle size={24} color={iconColor} weight="fill" />
+                            </div>
+                        </div>
+                        <p className="text-3xl font-bold text-white mb-4 relative z-10">{greeting}</p>
+                        <div className="flex items-center gap-2 relative z-10">
+                            <p className="text-zinc-400">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+                        </div>
+                    </div>
+                    
                     {/* Stats Card */}
                     <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
                         <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -88,20 +143,32 @@ export default function Dashboard() {
                         </div>
                         
                         <div className="space-y-4 relative z-10">
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="flex items-center pb-3 border-b border-zinc-800/30">
-                                    <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center mr-3 border border-zinc-700/30">
-                                        <Lightning size={20} color={iconColor} weight="fill" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-white font-medium">Activity {i}</p>
-                                        <p className="text-zinc-400 text-sm">Updated 2h ago</p>
-                                    </div>
+                            {loading ? (
+                                <div className="flex items-center justify-center py-6">
+                                    <CircleNotch size={24} className="text-orange-500 animate-spin" />
+                                    <span className="ml-2 text-zinc-400">Loading activities...</span>
                                 </div>
-                            ))}
+                            ) : activities.length > 0 ? (
+                                activities.slice(0, 3).map((activity, i) => (
+                                    <div key={activity._id} className="flex items-center pb-3 border-b border-zinc-800/30">
+                                        <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center mr-3 border border-zinc-700/30">
+                                            <Lightning size={20} color={iconColor} weight="fill" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-white font-medium">{activity.title || `Activity ${i+1}`}</p>
+                                            <p className="text-zinc-400 text-sm">{new Date(activity.createdAt).toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-6 text-zinc-500">
+                                    No recent activities found
+                                </div>
+                            )}
                         </div>
                     </div>
-                      {/* Tasks Card */}
+                    
+                    {/* Tasks Card */}
                     <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
                         <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="absolute top-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full blur-xl transform -translate-x-10 -translate-y-10"></div>
