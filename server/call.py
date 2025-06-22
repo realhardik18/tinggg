@@ -84,7 +84,7 @@ def call(activity_data=None,task='',description='',activity_id=""):
                 if detailed_desc:
                     custom_prompt = f"{greeting} {username}, TingTing here. {detailed_desc} {time_context}."
                 else:
-                    custom_prompt = f"{greeting} {username}, this is TingTing. It's time for your {activity_name} {time_context}. Are you ready?"
+                    custom_prompt = f"{greeting} hardik, this is TingTing. It's time for your {activity_name} {time_context}. Are you ready?"
                     
     payload = {
         "assistantId": AGENT_ID,
