@@ -5,7 +5,7 @@ export async function POST(request) {
   try {
     const data = await request.json();
 
-    const activityId = data['activity id'] || data.activityId;
+    const activityId = data['activity id'] || data.activityId || data.activity_id;
     const completed = data.completed;
     const details = data.details || '';
     const task = data.task || '';
