@@ -9,11 +9,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black overflow-hidden relative">
-      {/* Background effects */}
+      {/* Background effects - with animation */}
       <div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-orange-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[-10%] left-[25%] w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute top-[30%] left-[40%] w-64 h-64 bg-zinc-700/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[25%] w-96 h-96 bg-orange-500/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute top-[30%] left-[40%] w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s'}}></div>
+        
+        {/* Additional animated gradient elements */}
+        <div className="absolute top-[60%] right-[15%] w-80 h-80 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4.5s'}}></div>
+        <div className="absolute top-[10%] left-[10%] w-56 h-56 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
       
       {/* Header */}
@@ -39,87 +43,70 @@ export default function Home() {
       <main className="flex flex-col items-center justify-center flex-1 px-4 py-12 sm:px-6 lg:px-8 z-10 relative">
         {/* Hero Section */}
         <div className="text-center mb-16 relative max-w-4xl">
-          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-orange-500/20 rounded-full blur-xl"></div>
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-orange-500/20 rounded-full blur-xl animate-pulse"></div>
           <h1 className="text-5xl sm:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
             Stay Consistent <br/>
             <span className="bg-gradient-to-r from-orange-500 to-orange-400 inline-block text-transparent bg-clip-text">Without the Effort</span>
-          </h1>
-          <p className="text-xl sm:text-2xl text-zinc-300 mb-8 max-w-2xl mx-auto">
-            Ting Ting turns your everyday language into smart reminders that actually work.
-            No complex interfaces. Just say it, and we'll remember.
-          </p>
+          </h1>            <p className="text-xl sm:text-2xl text-zinc-300 mb-8 max-w-2xl mx-auto">
+              Ting Ting turns your everyday language into smart reminders that actually work.
+              No complex interfaces. Just say it, and we&apos;ll remember.
+            </p>
           
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <a
-              className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 rounded-lg hover:opacity-90 transition-all shadow-lg shadow-orange-500/20 text-white font-medium text-lg flex items-center gap-2 w-full sm:w-auto"
+              className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 rounded-lg hover:opacity-90 transition-all shadow-lg shadow-orange-500/20 text-white font-medium text-lg flex items-center gap-2 w-full sm:w-auto hover:scale-105 duration-300"
               href="/dashboard"
             >
               <Sparkle size={iconSize} weight="fill" /> Get Started Free
             </a>
             <a
-              className="px-8 py-4 bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 rounded-lg hover:bg-zinc-800/60 transition-colors text-white font-medium text-lg w-full sm:w-auto text-center flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 rounded-lg hover:bg-zinc-800/60 transition-colors text-white font-medium text-lg w-full sm:w-auto text-center flex items-center justify-center gap-2 hover:border-orange-500/30 duration-300"
               href="#demo"
             >
               <CircleNotch size={iconSize} /> See How It Works
             </a>
-          </div>
-
-          <div className="mt-12 pt-10 border-t border-zinc-800/50 flex justify-center gap-8">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">10K+</div>
-              <div className="text-zinc-400 text-sm">Active Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">98%</div>
-              <div className="text-zinc-400 text-sm">Completion Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">4.9/5</div>
-              <div className="text-zinc-400 text-sm">User Rating</div>
-            </div>
           </div>
         </div>
         
         {/* Features Section */}
         <div id="features" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full mb-20">
           {/* Feature Card 1 */}
-          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
+          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px] hover:border-orange-500/30 hover:shadow-orange-500/10">
             <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-xl transform translate-x-5 -translate-y-5"></div>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-xl transform translate-x-5 -translate-y-5 group-hover:bg-orange-500/20 transition-all duration-500"></div>
             
             <div className="flex items-center gap-3 mb-4 relative z-10">
-              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50">
+              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50 group-hover:border-orange-500/30 transition-colors">
                 <Lightning size={24} color={iconColor} weight="fill" />
               </div>
               <h3 className="text-xl font-medium text-white">Just say it. Ting Ting remembers.</h3>
             </div>
             
-            <div className="space-y-3 relative z-10 pl-4 border-l-2 border-zinc-800">
-              <p className="text-lg text-zinc-300">"Remind me to journal every night."</p>
-              <p className="text-lg text-zinc-300">"Check on my progress every 3 days."</p>
-              <p className="text-lg text-zinc-300">"Ask me about my reading habit every Sunday."</p>
+            <div className="space-y-3 relative z-10 pl-4 border-l-2 border-zinc-800 group-hover:border-orange-500/30 transition-colors">
+              <p className="text-lg text-zinc-300">&quot;Remind me to journal every night.&quot;</p>
+              <p className="text-lg text-zinc-300">&quot;Check on my progress every 3 days.&quot;</p>
+              <p className="text-lg text-zinc-300">&quot;Ask me about my reading habit every Sunday.&quot;</p>
             </div>
           </div>
           
           {/* Feature Card 2 */}
-          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
+          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px] hover:border-orange-500/30 hover:shadow-orange-500/10">
             <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full blur-xl transform -translate-x-10 translate-y-10"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full blur-xl transform -translate-x-10 translate-y-10 group-hover:bg-orange-500/20 transition-all duration-500"></div>
             
             <div className="flex items-center gap-3 mb-4 relative z-10">
-              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50">
+              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50 group-hover:border-orange-500/30 transition-colors">
                 <CheckCircle size={24} color={iconColor} weight="fill" />
               </div>
-              <h3 className="text-xl font-medium text-white">Smart reminders that work</h3>
+              <h3 className="text-xl font-medium text-white">Agentic reminders that work</h3>
             </div>
             
             <p className="text-lg mb-4 text-zinc-300 relative z-10">
-              Ting Ting takes your natural words and turns them into smart reminders.
-              No forms. No friction.
+              Ting Ting leverages AI to act as your personal agent, taking initiative to help you stay on track with your goals.
             </p>
             
-            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30">
-              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30">
+            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30 group-hover:border-orange-500/20 transition-colors">
+              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30 group-hover:border-orange-500/30 transition-colors">
                 <Clock size={20} color={iconColor} weight="fill" />
               </div>
               <div>
@@ -130,12 +117,12 @@ export default function Home() {
           </div>
           
           {/* Feature Card 3 */}
-          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
+          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px] hover:border-orange-500/30 hover:shadow-orange-500/10">
             <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute top-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full blur-xl transform -translate-x-10 -translate-y-10"></div>
+            <div className="absolute top-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full blur-xl transform -translate-x-10 -translate-y-10 group-hover:bg-orange-500/20 transition-all duration-500"></div>
             
             <div className="flex items-center gap-3 mb-4 relative z-10">
-              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50">
+              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50 group-hover:border-orange-500/30 transition-colors">
                 <ChartLine size={24} color={iconColor} weight="fill" />
               </div>
               <h3 className="text-xl font-medium text-white">Track your consistency</h3>
@@ -145,8 +132,8 @@ export default function Home() {
               Beautiful visualizations help you understand your habits and celebrate your progress over time.
             </p>
             
-            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30">
-              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30">
+            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30 group-hover:border-orange-500/20 transition-colors">
+              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30 group-hover:border-orange-500/30 transition-colors">
                 <Sparkle size={20} color={iconColor} weight="fill" />
               </div>
               <div>
@@ -157,28 +144,28 @@ export default function Home() {
           </div>
           
           {/* Feature Card 4 */}
-          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
+          <div className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px] hover:border-orange-500/30 hover:shadow-orange-500/10">
             <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute bottom-0 right-0 w-28 h-28 bg-orange-500/5 rounded-full blur-xl transform translate-x-10 translate-y-10"></div>
+            <div className="absolute bottom-0 right-0 w-28 h-28 bg-orange-500/5 rounded-full blur-xl transform translate-x-10 translate-y-10 group-hover:bg-orange-500/20 transition-all duration-500"></div>
             
             <div className="flex items-center gap-3 mb-4 relative z-10">
-              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50">
+              <div className="p-2 bg-zinc-800/70 backdrop-blur-sm rounded-lg border border-zinc-700/50 group-hover:border-orange-500/30 transition-colors">
                 <Calendar size={24} color={iconColor} weight="fill" />
               </div>
-              <h3 className="text-xl font-medium text-white">Adaptive scheduling</h3>
+              <h3 className="text-xl font-medium text-white">Adaptive AI agent</h3>
             </div>
             
             <p className="text-lg mb-4 text-zinc-300 relative z-10">
-              Ting Ting adapts to your lifestyle and learns the best times to send reminders based on your behavior.
+              Unlike passive reminder apps, Ting Ting actively monitors your habits and takes initiative to help you succeed.
             </p>
             
-            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30">
-              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30">
+            <div className="flex items-center gap-3 relative z-10 pt-3 border-t border-zinc-800/30 group-hover:border-orange-500/20 transition-colors">
+              <div className="w-10 h-10 bg-zinc-800/70 backdrop-blur-sm rounded-lg flex items-center justify-center border border-zinc-700/30 group-hover:border-orange-500/30 transition-colors">
                 <MagnifyingGlass size={20} color={iconColor} weight="fill" />
               </div>
               <div>
-                <p className="text-white font-medium">Smart analysis</p>
-                <p className="text-zinc-400 text-sm">Learns your optimal times</p>
+                <p className="text-white font-medium">Proactive assistance</p>
+                <p className="text-zinc-400 text-sm">More than just reminders</p>
               </div>
             </div>
           </div>
@@ -201,7 +188,7 @@ export default function Home() {
               <div className="flex-1 space-y-4">
                 <div className="bg-zinc-800/70 backdrop-blur-sm p-4 rounded-lg border border-zinc-700/50">
                   <p className="text-zinc-300 mb-2">You say:</p>
-                  <p className="text-white text-lg">"Remind me to meditate every morning at 7am"</p>
+                  <p className="text-white text-lg">&quot;Remind me to meditate every morning at 7am&quot;</p>
                 </div>
                 
                 <div className="bg-zinc-800/70 backdrop-blur-sm p-4 rounded-lg border border-zinc-700/50">
@@ -237,55 +224,48 @@ export default function Home() {
           </div>
         </div>
         
-        {/* Testimonials */}
+        {/* Agentic AI Section - Replacing Testimonials */}
         <div className="w-full max-w-5xl mb-20">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-white mb-4">What Our Users Say</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Truly Agentic Experience</h2>
             <p className="text-xl text-zinc-300 max-w-2xl mx-auto">
-              Join thousands who have transformed their habits with Ting Ting.
+              Unlike traditional reminders, Ting Ting actively works on your behalf to help you build habits.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Alex W.",
-                role: "Product Designer",
-                quote: "Ting Ting helped me establish a consistent writing habit. The natural language interface is a game-changer."
-              },
-              {
-                name: "Sarah J.",
-                role: "Fitness Coach",
-                quote: "I recommend Ting Ting to all my clients. It's the easiest way to build sustainable habits that actually stick."
-              },
-              {
-                name: "Michael T.",
-                role: "Software Engineer",
-                quote: "As someone who's tried every productivity app, Ting Ting is the only one that feels effortless to use daily."
-              }
-            ].map((testimonial, i) => (
-              <div key={i} className="bg-zinc-900/40 backdrop-blur-xl p-6 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-orange-500/10 rounded-full blur-xl transform translate-x-5 -translate-y-5"></div>
-                
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-full flex items-center justify-center text-white font-medium">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-white font-medium">{testimonial.name}</p>
-                    <p className="text-zinc-400 text-sm">{testimonial.role}</p>
-                  </div>
+          <div className="bg-zinc-900/40 backdrop-blur-xl p-8 rounded-xl border border-zinc-800/50 shadow-xl relative overflow-hidden group transition-all duration-300 hover:translate-y-[-5px] hover:border-orange-500/30 hover:shadow-orange-500/10">
+            <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl transform translate-x-20 -translate-y-20 group-hover:bg-orange-500/20 transition-all duration-500"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+              <div className="bg-zinc-800/50 backdrop-blur-sm p-5 rounded-lg border border-zinc-700/40 transition-all duration-300 hover:border-orange-500/30">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Lightning size={28} color={iconColor} weight="fill" />
                 </div>
-                
-                <p className="text-zinc-300 italic relative z-10">"{testimonial.quote}"</p>
-                
-                <div className="mt-4 flex">
-                  {[1,2,3,4,5].map(star => (
-                    <Sparkle key={star} size={16} color={iconColor} weight="fill" />
-                  ))}
-                </div>
+                <h3 className="text-white font-medium text-lg text-center mb-2">Proactive Assistance</h3>
+                <p className="text-zinc-300 text-center">Takes the initiative to help you stay on track, instead of just passively reminding you.</p>
               </div>
-            ))}
+              
+              <div className="bg-zinc-800/50 backdrop-blur-sm p-5 rounded-lg border border-zinc-700/40 transition-all duration-300 hover:border-orange-500/30">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Sparkle size={28} color={iconColor} weight="fill" />
+                </div>
+                <h3 className="text-white font-medium text-lg text-center mb-2">Adaptive Intelligence</h3>
+                <p className="text-zinc-300 text-center">Learns from your patterns and adjusts its approach based on what works best for you.</p>
+              </div>
+              
+              <div className="bg-zinc-800/50 backdrop-blur-sm p-5 rounded-lg border border-zinc-700/40 transition-all duration-300 hover:border-orange-500/30">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle size={28} color={iconColor} weight="fill" />
+                </div>
+                <h3 className="text-white font-medium text-lg text-center mb-2">Goal Alignment</h3>
+                <p className="text-zinc-300 text-center">Understands your broader objectives and helps you make consistent progress toward them.</p>
+              </div>
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-zinc-800/30 text-center relative z-10">
+              <p className="text-lg text-zinc-300">Ting Ting doesn&apos;t just remind you—it actively collaborates with you to achieve your goals.</p>
+            </div>
           </div>
         </div>
         
