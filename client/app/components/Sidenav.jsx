@@ -47,7 +47,7 @@ export default function Sidenav() {
                     </button>
                     {!collapsed && 
                         <span className="text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out">
-                            Ting Ting
+                            Tingg
                         </span>
                     }
                 </div>
